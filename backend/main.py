@@ -1,12 +1,20 @@
-import json
 import pandas as pd
 
-def main():
-    with open('../dataset/News_Category_Dataset_v3.json', 'r') as file:
-        json_data = json.load(file)
-    data = pd.json_normalize(json_data['data'])
+from rf_model import train_random_forest
 
-    print(data.head)
+def main():
+    df = pd.read_csv('./../dataset/labelled/split1.csv')
+    df.fillna('', inplace=True)
+    df['text'] = df['headline'] + ' ' + df['short_description']
+
+    bert_df = pd.read_csv('./../dataset/labelled/bert.csv')
+
+
+    print("\nTraining model on self labelled data...")
+    train_random_forest(df)
+
+    print("\nTraining model on BERT labelled data...")
+    train_random_forest(bert_df)
 
 
 if __name__ == "__main__":
